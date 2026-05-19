@@ -1,0 +1,42 @@
+services:
+  db:
+    image: mongo:8
+    container_name: mongodb
+    logging: 
+      driver: "none"
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USER}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD}
+    networks:
+      - app-network
+  api:
+    build: .
+    depends_on:
+      - db
+    container_name: node_api_dev
+    ports:
+      - "3000:3000"
+      - "9229:9229"
+    volumes:
+      - .:/app
+      - /app/node_modules # Esto protege los módulos internos del contenedor
+    environment:
+      - NODE_ENV=development
+      - PORT=3000
+      - MONGO_URL=mongodb://${MONGO_USER}:${MONGO_PASSWORD}@db:27017/node_mongo?authSource=admin
+      - JWT_SECRET=${JWT_SECRET}
+      - CI=true
+    command: ./node_modules/.bin/tsx watch --inspect=0.0.0.0:9229 src/app.ts
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  mongo_data:

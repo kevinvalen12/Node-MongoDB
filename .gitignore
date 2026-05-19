@@ -1,0 +1,19 @@
+# Dependencias
+node_modules/
+.pnpm-store
+
+# Compilación TypeScript
+dist/
+
+# Variables de entorno
+.env
+.env.local
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
