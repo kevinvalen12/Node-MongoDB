@@ -1,6 +1,7 @@
 import express, {Response, Request} from "express";
 import dotenv from "dotenv";
 import morgan from "morgan";
+import { DATABASE } from "./config/db.js";
 
 dotenv.config();
 
@@ -16,6 +17,8 @@ app.get('/', (_req: Request, res: Response) => {
     res.send("holaaaaa")
 });
 
+const db = DATABASE.getInstance();
+await db.connect();
 
 app.listen(PORT, () => {
     console.log(`conexion exitasa al puerto ${PORT}`)
