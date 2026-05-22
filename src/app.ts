@@ -17,9 +17,18 @@ app.get('/', (_req: Request, res: Response) => {
     res.send("holaaaaa")
 });
 
-const db = DATABASE.getInstance();
-await db.connect();
+const startServer = async () => {
+    try {
+        const db = DATABASE.getInstance();
+        await db.connect();
 
-app.listen(PORT, () => {
-    console.log(`conexion exitasa al puerto ${PORT}`)
-});
+        app.listen(PORT, () => {
+            console.log(`conexion exitasa al puerto ${PORT}`)
+        });
+    } catch(error) {
+        console.error('error al conectar mongo', error);
+        process.exit(1);
+    }
+}
+
+startServer();
