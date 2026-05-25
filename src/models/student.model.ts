@@ -14,7 +14,7 @@ const studentSchema = new Schema<StudentDocument>(
             type: String,
             required: [true, 'el nombre es obligatorio'],
             minlength: [3, 'el nombre debe de tener minimo 3 caracteres'],
-            match: [/^[A-Za-z\s]+$/, 'el campo no permite numero']
+            match: [/^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]+$/, 'el campo no permite numero']
         },
         birthDate: {
             type: Date,

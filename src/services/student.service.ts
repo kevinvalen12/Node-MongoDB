@@ -1,3 +1,4 @@
+import { Types } from 'mongoose';
 import { StudentInterface } from "../interfaces/student.interface";
 import Student from "../models/student.model";
 
@@ -16,7 +17,7 @@ export class StudentService {
      * @param limit // limite la cantidad maxima de registros por pagina
      * @returns 
      */
-    async getAll(page: number = 1, limit: number = 10): Promise<PaginatedResult> {
+    async getAll(page: number = 1, limit: number = 10): Promise<PaginatedResult | null> {
         // calcula cunatos documentos saltarse
         const skip = (page - 1) * limit;
 
@@ -28,22 +29,25 @@ export class StudentService {
                 .limit(limit), // limita los datos por pagina
             Student.countDocuments()
         ]);
+
+        const totalPages = Math.ceil(total / limit)
+        if (page > totalPages && total > 0) return null
         
         return {
             data,
             total,
             page,
-            totalPages: Math.ceil(total / limit)
+            totalPages
         };
     }
 
-    // async getId(): Promise<StudentInterface> {
+    async getId(id: string): Promise<StudentInterface | null> {
+        return await Student.findById(new Types.ObjectId(id)).select('-__v');
+    }
 
-    // }
-
-    // async createStudent(): Promise<StudentInterface> {
-
-    // }
+    async createStudent(body: StudentInterface) {
+        return await Student.create(body);
+    }
 
     async editStudent() {
 
