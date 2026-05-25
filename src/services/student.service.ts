@@ -49,8 +49,15 @@ export class StudentService {
         return await Student.create(body);
     }
 
-    async editStudent() {
-
+    async editStudent(id: string, body: StudentInterface): Promise<StudentInterface | null> {
+        const studentId = new Types.ObjectId(id);
+        const studentUpdate = await Student.findByIdAndUpdate(
+            studentId, 
+            { $set: body}, // evita sobreescribir capos no enviados usando
+            { after: true, runValidators: true }
+        );
+    
+        return studentUpdate;
     }
 
     async deleteStudent() {
