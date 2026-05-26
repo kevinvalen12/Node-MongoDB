@@ -54,7 +54,7 @@ export class StudentService {
         const studentUpdate = await Student.findByIdAndUpdate(
             studentId, 
             { $set: body}, // evita sobreescribir capos no enviados usando
-            { after: true, runValidators: true }
+            { new: true, runValidators: true }
         );
     
         return studentUpdate;

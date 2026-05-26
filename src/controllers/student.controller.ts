@@ -67,9 +67,9 @@ export class StudentController {
             if(!isValidObjectId(id)) return res.status(400).json({ message: 'El id no es válido' });
 
             const student = await this.studentService.editStudent(id, body);
-            if(!student) return res.status(404).json({ message: `el id del estudiantes no se encuentra: ${id}` });
+            if(!student) return res.status(404).json({ message: 'Estudiantes no se encuentra' });
             console.log(student)
-            return student;
+            return res.json(student);
         } catch(error) {
             const message = error instanceof Error ? error.message : 'Error interno en el servidor'
             return res.status(500).json({ message });
@@ -77,7 +77,7 @@ export class StudentController {
     }
 
     studentDelete = async () => {
-
+        
     }
 
 }
