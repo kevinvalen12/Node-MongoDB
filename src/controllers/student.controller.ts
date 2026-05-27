@@ -1,6 +1,7 @@
 import { Response, Request } from 'express';
 import { StudentService } from '../services/student.service';
 import { isValidObjectId } from 'mongoose';
+import { run } from 'node:test';
 export class StudentController {
     private studentService: StudentService;
 
@@ -76,8 +77,19 @@ export class StudentController {
         }
     }
 
-    studentDelete = async () => {
-        
+    studentDelete = async (req: Request, res: Response) => {
+        try {
+            const id = req.params.id as string;
+            if (!isValidObjectId(id)) return res.status(404).json({ message: 'El id no es válido' });
+
+            const delectedStudent = await this.studentService.deleteStudent(id);
+            if (!delectedStudent) return res.status(404).json({ message: 'Estudiantes no se encuentra' });
+
+            return res.json({ message: 'Estudiante eliminado correctament' })
+        } catch(error) {
+            const message = error instanceof Error ? error.message : 'Error interno en el servidor'
+            return res.status(500).json({ message });
+        }
     }
 
 }

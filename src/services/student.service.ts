@@ -60,7 +60,10 @@ export class StudentService {
         return studentUpdate;
     }
 
-    async deleteStudent() {
+    async deleteStudent(id: string) {
+        const studentId = new Types.ObjectId(id);
+        const studentDeleted = await Student.deleteOne({ _id: studentId });
 
+        return studentDeleted;
     }
 }
