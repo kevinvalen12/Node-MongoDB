@@ -1,7 +1,6 @@
 import { Response, Request } from 'express';
 import { StudentService } from '../services/student.service';
 import { isValidObjectId } from 'mongoose';
-import { run } from 'node:test';
 export class StudentController {
     private studentService: StudentService;
 
