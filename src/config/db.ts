@@ -25,7 +25,6 @@ export class DATABASE {
         }
 
         const url = process.env.MONGO_URL;
-        console.log(url)
         if(!url) throw new Error('MONGO_URl no esta bien definada en variables de entorno')
 
         const options: ConnectOptions = {

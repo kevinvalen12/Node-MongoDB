@@ -53,7 +53,8 @@ export const StudentSchema = z.object({
     isActive: z.boolean().default(true)
 })
 
-export const studentUpdateSchame = StudentSchema.partial();
+// partial hace que los campos sean opcionales
+export const StudentUpdateSchema = StudentSchema.partial();
 
 export type StudentDto = z.infer<typeof StudentSchema>;
-export type StudentUpdateDto = z.infer<typeof studentUpdateSchame>;
+export type StudentUpdateDto = z.infer<typeof StudentUpdateSchema>;

@@ -1,6 +1,11 @@
 import { Response, Request } from 'express';
 import { StudentService } from '../services/student.service';
 import { isValidObjectId } from 'mongoose';
+
+/**
+ * Controlador para gestionar las operaciones CRUD de estudiantes.
+ * Maneja las peticiones HTTP y delega la lógica de negocio al StudentService.
+ */
 export class StudentController {
     private studentService: StudentService;
 
@@ -9,9 +14,12 @@ export class StudentController {
     }
 
     /**
-     * Obtiene una lista paginada de estudiantes de forma asíncrona.
-     * Extrae los parametros page y limit proporcionados en la url
-     * Aplica valores pro de defecto sino proporcionados en la url
+     * Obtiene una lista paginada de estudiantes.
+     *
+     * @route GET /students
+     * @param {Request} req - Request de Express (query: page, limit)
+     * @param {Response} res - Response de Express
+     * @returns {Promise<Response>} Lista paginada de estudiantes o error.
      */
     getStudent = async (req: Request, res: Response) => {
         try {
@@ -29,6 +37,14 @@ export class StudentController {
         }
     }
 
+    /**
+     * Obtiene un estudiante por su ID.
+     *
+     * @route GET /students/:id
+     * @param {Request} req - Request de Express (params: id)
+     * @param {Response} res - Response de Express
+     * @returns {Promise<Response>} Estudiante encontrado o error.
+     */
     getStudentId = async (req: Request, res: Response) => {
         try {
             const id = req.params.id as string;
@@ -44,11 +60,19 @@ export class StudentController {
         }
     }
 
+    /**
+     * Crea un nuevo estudiante.
+     *
+     * @route POST /students
+     * @param {Request} req - Request de Express (body: datos del estudiante)
+     * @param {Response} res - Response de Express
+     * @returns {Promise<Response>} Estudiante creado o error.
+     */
     studentCreate = async (req: Request, res: Response) => {
         try {
-            const body = req.body;
+            const data = req.body;
 
-            const id = await this.studentService.createStudent(body);
+            const id = await this.studentService.createStudent(data);
             return res.status(201).json({
                 message: 'Estudiantes creado exitosamente',
                 id
@@ -59,14 +83,22 @@ export class StudentController {
         }
     }
 
+    /**
+     * Edita un estudiante existente.
+     *
+     * @route PUT /students/:id
+     * @param {Request} req - Request de Express (params: id, body: datos a editar)
+     * @param {Response} res - Response de Express
+     * @returns {Promise<Response>} Estudiante editado o error.
+     */
     studentEdit = async (req: Request, res: Response) => {
         try {
-            const body = req.body;
+            const data = req.body;
             
             const id = req.params.id as string;
             if(!isValidObjectId(id)) return res.status(400).json({ message: 'El id no es válido' });
 
-            const student = await this.studentService.editStudent(id, body);
+            const student = await this.studentService.editStudent(id, data);
             if(!student) return res.status(404).json({ message: 'Estudiantes no se encuentra' });
             console.log(student)
             return res.json(student);
@@ -76,6 +108,14 @@ export class StudentController {
         }
     }
 
+    /**
+     * Elimina un estudiante por su ID.
+     *
+     * @route DELETE /students/:id
+     * @param {Request} req - Request de Express (params: id)
+     * @param {Response} res - Response de Express
+     * @returns {Promise<Response>} Mensaje de éxito o error.
+     */
     studentDelete = async (req: Request, res: Response) => {
         try {
             const id = req.params.id as string;
