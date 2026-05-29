@@ -1,6 +1,7 @@
-import { Response, Request } from 'express';
+import { Response, Request, NextFunction } from 'express';
 import { StudentService } from '../services/student.service';
 import { isValidObjectId } from 'mongoose';
+import { AppError } from '../middlewares/error.middleware';
 
 /**
  * Controlador para gestionar las operaciones CRUD de estudiantes.
@@ -21,19 +22,18 @@ export class StudentController {
      * @param {Response} res - Response de Express
      * @returns {Promise<Response>} Lista paginada de estudiantes o error.
      */
-    getStudent = async (req: Request, res: Response) => {
+    getStudent = async (req: Request, res: Response, next: NextFunction) => {
         try {
 
             const page = Math.max(1, Number(req.query.page ?? 1));
             const limit = Math.max(1, Math.min(100, Number(req.query.limit ?? 1)));
             
             const students = await this.studentService.getAll(page, limit);
-            if (!students) return res.status(404).json({ message: 'Has superado el limite de paginas' });
+            if (!students) throw new AppError('Has superado el limite de paginas', 404);
             
             return res.json(students);
         } catch(error) {
-            const message = error instanceof Error ? error.message : 'Error interno en el servidor'
-            return res.status(500).json({ message });
+            return next(error);
         }
     }
 
@@ -45,18 +45,17 @@ export class StudentController {
      * @param {Response} res - Response de Express
      * @returns {Promise<Response>} Estudiante encontrado o error.
      */
-    getStudentId = async (req: Request, res: Response) => {
+    getStudentId = async (req: Request, res: Response, next: NextFunction) => {
         try {
             const id = req.params.id as string;
-            if (!isValidObjectId(id)) return res.status(400).json({ message: 'El id no es válido' });
+            if (!isValidObjectId(id)) throw new AppError('El id no es válido', 400);
 
             const studentData = await this.studentService.getId(id);
-            if (!studentData) return res.status(404).json({ message: `el id del estudiantes no se encuentra: ${id}` });
+            if (!studentData) throw new AppError('Estudiantes no se encuentra', 404)
         
             return res.json(studentData);
         } catch(error) {
-            const message = error instanceof Error ? error.message : 'Error interno en el servidor'
-            return res.status(500).json({ message });
+            return next(error);
         }
     }
 
@@ -68,7 +67,7 @@ export class StudentController {
      * @param {Response} res - Response de Express
      * @returns {Promise<Response>} Estudiante creado o error.
      */
-    studentCreate = async (req: Request, res: Response) => {
+    studentCreate = async (req: Request, res: Response, next: NextFunction) => {
         try {
             const data = req.body;
 
@@ -78,8 +77,7 @@ export class StudentController {
                 id
             });
         } catch(error) {
-            const message = error instanceof Error ? error.message : 'Error interno en el servidor'
-            return res.status(500).json({ message });
+            return next(error);
         }
     }
 
@@ -91,20 +89,19 @@ export class StudentController {
      * @param {Response} res - Response de Express
      * @returns {Promise<Response>} Estudiante editado o error.
      */
-    studentEdit = async (req: Request, res: Response) => {
+    studentEdit = async (req: Request, res: Response, next: NextFunction) => {
         try {
             const data = req.body;
             
             const id = req.params.id as string;
-            if(!isValidObjectId(id)) return res.status(400).json({ message: 'El id no es válido' });
+            if (!isValidObjectId(id)) throw new AppError('El id no es válido', 400);
 
             const student = await this.studentService.editStudent(id, data);
-            if(!student) return res.status(404).json({ message: 'Estudiantes no se encuentra' });
+            if (!student) throw new AppError('Estudiantes no se encuentra', 404);
             console.log(student)
             return res.json(student);
         } catch(error) {
-            const message = error instanceof Error ? error.message : 'Error interno en el servidor'
-            return res.status(500).json({ message });
+            return next(error);
         }
     }
 
@@ -116,18 +113,17 @@ export class StudentController {
      * @param {Response} res - Response de Express
      * @returns {Promise<Response>} Mensaje de éxito o error.
      */
-    studentDelete = async (req: Request, res: Response) => {
+    studentDelete = async (req: Request, res: Response, next: NextFunction) => {
         try {
             const id = req.params.id as string;
-            if (!isValidObjectId(id)) return res.status(404).json({ message: 'El id no es válido' });
+            if (!isValidObjectId(id)) throw new AppError('El id no es valido', 400);
 
             const delectedStudent = await this.studentService.deleteStudent(id);
-            if (!delectedStudent) return res.status(404).json({ message: 'Estudiantes no se encuentra' });
+            if (!delectedStudent) throw new AppError('El estudiante no se encuentra', 404)
 
             return res.json({ message: 'Estudiante eliminado correctament' })
         } catch(error) {
-            const message = error instanceof Error ? error.message : 'Error interno en el servidor'
-            return res.status(500).json({ message });
+            return next(error);
         }
     }
 
