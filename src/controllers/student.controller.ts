@@ -1,7 +1,7 @@
 import { Response, Request, NextFunction } from 'express';
 import { StudentService } from '../services/student.service';
 import { isValidObjectId } from 'mongoose';
-import { AppError } from '../middlewares/error.middleware';
+import { AppError } from '../middlewares/errros/error.middleware';
 
 /**
  * Controlador para gestionar las operaciones CRUD de estudiantes.

@@ -1,5 +1,5 @@
 import { StudentSchema, StudentUpdateSchema } from '../schemas/student.schema';
-import { validateData } from '../middlewares/validate.middlewares';
+import { validateData } from '../middlewares/errros/validate.middlewares';
 import { StudentController } from './../controllers/student.controller';
 import { Router } from "express";
 
