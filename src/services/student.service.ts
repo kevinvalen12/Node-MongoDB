@@ -80,8 +80,11 @@ export class StudentService {
         const studentUpdate = await Student.findByIdAndUpdate(
             studentId, 
             { $set: body}, // evita sobreescribir capos no enviados usando
-            { new: true, runValidators: true }
-        );
+            { 
+                returnDocument: 'after',
+                runValidators: true
+            }
+        ).select('-__v, -id');
     
         return studentUpdate;
     }
