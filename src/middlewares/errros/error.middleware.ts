@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from "express";
+import { Logger } from "../logger/logger.class";
 
 /**
  * Clase personalizada para manejar errores de la aplicación.
@@ -37,6 +38,9 @@ export class AppError extends Error {
  * @returns {void} Envía respuesta JSON con el error al cliente
  */
 export const errorHandler = (err: Error, _req: Request, res: Response, _next: NextFunction) => {
+    //loger se debe de registrar aca
+    Logger.error(err.message, { stack: err.stack });
+
     // Verifica si el error es un AppError personalizado
     if (err instanceof AppError) {
         return res.status(err.statusCode).json({ message: err.message });

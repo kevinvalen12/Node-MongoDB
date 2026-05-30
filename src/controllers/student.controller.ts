@@ -8,11 +8,8 @@ import { AppError } from '../middlewares/errros/error.middleware';
  * Maneja las peticiones HTTP y delega la lógica de negocio al StudentService.
  */
 export class StudentController {
-    private studentService: StudentService;
-
-    constructor() {
-        this.studentService = new StudentService();
-    }
+    // inyeccion de dependencia 
+    constructor(private studentService: StudentService) {}
 
     /**
      * Obtiene una lista paginada de estudiantes.

@@ -6,11 +6,9 @@ import { Router } from "express";
     
 export class StudentRouter {
     public router: Router;
-    private studentController: StudentController;
 
-    constructor() {
+    constructor(private studentController: StudentController) {
         this.router = Router();
-        this.studentController = new StudentController;
         this.configurecion();
     }
 
